@@ -1,0 +1,76 @@
+import type { Metadata } from "next";
+import { Suspense } from "react";
+import { Inter } from "next/font/google";
+import { ThemeProvider } from "@/components/theme-provider";
+import { TopLoader } from "@/components/top-loader";
+import { getSiteSettings } from "@/actions/settings";
+import "highlight.js/styles/github-dark.css";
+import "./globals.css";
+
+const inter = Inter({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  const title = settings.site_title || "Wahyu Hidayatullah - Portfolio";
+  const description = settings.meta_description || "Personal portfolio of Wahyu Hidayatullah";
+
+  return {
+    metadataBase: new URL("https://www.wahidayatullah.my.id"),
+    title,
+    description,
+    icons: {
+      icon: [
+        { url: "/favicon.svg", type: "image/svg+xml" },
+      ],
+      apple: [
+        { url: "/favicon.svg" },
+      ],
+    },
+    openGraph: {
+      title,
+      description,
+      url: "https://www.wahidayatullah.my.id",
+      siteName: title,
+      locale: "id_ID",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
+    },
+  };
+}
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${inter.variable} font-sans antialiased`} suppressHydrationWarning>
+        <ThemeProvider>
+          <Suspense fallback={null}>
+            <TopLoader />
+          </Suspense>
+          {children}
+        </ThemeProvider>
+      </body>
+    </html>
+  );
+}

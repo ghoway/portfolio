@@ -1,0 +1,135 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id             String   @id @default(cuid())
+  name           String
+  email          String   @unique
+  hashedPassword String
+  role           String   @default("ADMIN")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model HeroSection {
+  id              String  @id @default(cuid())
+  name            String  @default("Wahyu Hidayatullah")
+  subtitle        String  @default("Informatics Engineering Student")
+  description     String  @default("Passionate about AI, Web Development, and Computer Networking")
+  showHireMe      Boolean @default(true)
+  profileImageUrl String?
+  resumeUrl       String?
+}
+
+model AboutSection {
+  id          String  @id @default(cuid())
+  biography   String  @default("")
+  careerGoals String  @default("")
+  cvLink      String?
+  imageUrl    String?
+}
+
+model Experience {
+  id          String   @id @default(cuid())
+  title       String
+  company     String
+  startDate   String
+  endDate     String?
+  description String
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Skill {
+  id       String @id @default(cuid())
+  name     String
+  category String @default("General")
+  level    Int    @default(50)
+  icon     String @default("code")
+  order    Int    @default(0)
+}
+
+model Project {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  description String
+  content     String?
+  techStack   String
+  githubUrl   String?
+  liveUrl     String?
+  imageUrl    String?
+  category    String   @default("Web")
+  featured    Boolean  @default(false)
+  status      String   @default("DRAFT")
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model BlogPost {
+  id             String   @id @default(cuid())
+  title          String
+  slug           String   @unique
+  content        String
+  excerpt        String?
+  seoTitle       String?
+  seoDescription String?
+  coverImageUrl  String?
+  status         String   @default("DRAFT")
+  tags           String   @default("")
+  category       String   @default("General")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  subject   String
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model SiteSetting {
+  id    String @id @default(cuid())
+  key   String @unique
+  value String @default("")
+}
+
+model Freelance {
+  id          String   @id @default(cuid())
+  projectName String
+  clientName  String
+  description String
+  techStack   String   @default("")
+  startDate   String
+  endDate     String?
+  projectUrl  String?
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Certification {
+  id            String   @id @default(cuid())
+  title         String
+  issuer        String
+  issueDate     String
+  expiryDate    String?
+  credentialId  String?
+  credentialUrl String?
+  imageUrl      String?
+  isActive      Boolean  @default(true)
+  order         Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
