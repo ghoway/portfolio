@@ -20,7 +20,7 @@ export async function updateSiteSettings(formData: FormData) {
   if (!session || session.user.role !== "ADMIN") throw new Error("Unauthorized");
 
   const keys = [
-    "site_title", "meta_description", "footer_text",
+    "site_title", "meta_description", "meta_keywords", "site_author", "og_image_url", "footer_text",
     "github_url", "linkedin_url", "twitter_url", "instagram_url",
     "default_theme", "ai_model",
     "contact_email",

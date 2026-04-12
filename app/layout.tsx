@@ -17,11 +17,16 @@ export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings();
   const title = settings.site_title || "Wahyu Hidayatullah - Portfolio";
   const description = settings.meta_description || "Personal portfolio of Wahyu Hidayatullah";
+  const keywords = settings.meta_keywords || "AI, Web Development, Backend, Full Stack Developer";
+  const author = settings.site_author || "Wahyu Hidayatullah";
+  const ogImage = settings.og_image_url || "";
 
-  return {
+  const metadata: Metadata = {
     metadataBase: new URL("https://www.wahidayatullah.my.id"),
     title,
     description,
+    keywords,
+    authors: [{ name: author }],
     icons: {
       icon: [
         { url: "/favicon.svg", type: "image/svg+xml" },
@@ -55,6 +60,15 @@ export async function generateMetadata(): Promise<Metadata> {
       },
     },
   };
+
+  if (ogImage) {
+    metadata.openGraph = {
+      ...metadata.openGraph,
+      images: [{ url: ogImage, width: 1200, height: 630 }],
+    };
+  }
+
+  return metadata;
 }
 
 export default function RootLayout({

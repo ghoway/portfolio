@@ -85,6 +85,9 @@ export interface ContactMessageData {
 export interface SiteSettingsMap {
   site_title: string;
   meta_description: string;
+  meta_keywords: string;
+  site_author: string;
+  og_image_url: string;
   footer_text: string;
   github_url: string;
   linkedin_url: string;
