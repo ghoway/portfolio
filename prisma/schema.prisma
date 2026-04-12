@@ -133,3 +133,14 @@ model Certification {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }
+
+model ImageUpload {
+  id           String   @id @default(cuid())
+  cloudinaryId String   @unique
+  secureUrl    String
+  folder       String   @default("general")
+  width        Int?
+  height       Int?
+  format       String?
+  createdAt    DateTime @default(now())
+}

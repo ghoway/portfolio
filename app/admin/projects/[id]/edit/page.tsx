@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { use } from "react";
 import { useRouter } from "next/navigation";
 import { Save, ChevronDown, ArrowLeft, X } from "lucide-react";
-import { ImageUpload } from "@/components/image-upload";
 import { useToast } from "@/components/toast";
 import { useSaveConfirm, SaveConfirm } from "@/components/save-confirm";
 import Link from "next/link";
@@ -18,14 +17,12 @@ export default function EditProjectPage({ params }: EditProjectPageProps) {
   const router = useRouter();
   const { toast } = useToast();
   const [project, setProject] = useState<Record<string, string | boolean | number> | null>(null);
-  const [imageUrl, setImageUrl] = useState("");
   const { isConfirming, confirmSave, cancelSave } = useSaveConfirm();
   const [pendingFormData, setPendingFormData] = useState<FormData | null>(null);
 
   useEffect(() => {
     fetch(`/api/admin/projects/${id}`).then(r => r.json()).then(data => {
       setProject(data);
-      setImageUrl((data.imageUrl as string) || "");
     });
   }, [id]);
 
@@ -39,7 +36,6 @@ export default function EditProjectPage({ params }: EditProjectPageProps) {
     if (!pendingFormData) return;
     try {
       pendingFormData.set("id", id);
-      pendingFormData.set("imageUrl", imageUrl);
       const res = await fetch("/api/admin/projects", { method: "PUT", body: pendingFormData });
       if (res.ok) {
         toast("Project updated successfully!");
@@ -66,14 +62,6 @@ export default function EditProjectPage({ params }: EditProjectPageProps) {
       </div>
 
       <form onSubmit={handleSubmitWrapper} className="space-y-4">
-        <ImageUpload
-          currentImage={(project.imageUrl as string) || null}
-          onUpload={setImageUrl}
-          folder="projects"
-          label="Project Cover Image"
-          aspectRatio="video"
-          name="imageUrl"
-        />
         <div className="grid gap-4 sm:grid-cols-2">
           <div><label className="mb-1 block text-sm font-medium">Title</label><input name="title" defaultValue={project.title as string} required className="w-full rounded-xl border border-neutral-200 px-4 py-3 text-sm dark:border-neutral-700 dark:bg-neutral-800" /></div>
           <div>

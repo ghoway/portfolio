@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import Link from "next/link";
-import { Pencil, Eye, Star, GripVertical } from "lucide-react";
+import { Pencil, Star, GripVertical } from "lucide-react";
 import { DeleteProjectButton } from "./delete-button";
 import { useToast } from "@/components/toast";
 
@@ -92,9 +92,6 @@ export function ProjectList({ initialProjects }: { initialProjects: ProjectData[
             </div>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
-            <Link href={`/projects/${p.slug}`} className="rounded-lg p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800">
-              <Eye className="h-4 w-4 text-neutral-500" />
-            </Link>
             <Link href={`/admin/projects/${p.id}/edit`} className="rounded-lg p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800">
               <Pencil className="h-4 w-4 text-neutral-500" />
             </Link>

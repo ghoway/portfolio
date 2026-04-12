@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { X, Loader2, ImageIcon } from "lucide-react";
 
@@ -11,6 +11,15 @@ interface ImageUploadProps {
   label?: string;
   name?: string;
   aspectRatio?: "square" | "video" | "banner";
+}
+
+interface RecentImage {
+  id: string;
+  secureUrl: string;
+  cloudinaryId: string;
+  width?: number;
+  height?: number;
+  createdAt: string;
 }
 
 export function ImageUpload({
@@ -24,6 +33,7 @@ export function ImageUpload({
   const [preview, setPreview] = useState<string | null>(currentImage || null);
   const [uploading, setUploading] = useState(false);
   const [dragOver, setDragOver] = useState(false);
+  const [recentImages, setRecentImages] = useState<RecentImage[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const aspectClasses = {
@@ -31,6 +41,35 @@ export function ImageUpload({
     video: "aspect-video w-full max-w-md",
     banner: "aspect-[3/1] w-full max-w-lg",
   };
+
+  // Fetch recent images
+  useEffect(() => {
+    async function fetchRecentImages() {
+      try {
+        const params = new URLSearchParams({
+          folder,
+          limit: "6",
+        });
+        const url = `/api/admin/upload/recent?${params.toString()}`;
+        console.log("Fetching recent images from:", url);
+        const res = await fetch(url);
+        console.log("Recent images response status:", res.status);
+        
+        if (!res.ok) {
+          console.warn("Failed to fetch recent images:", res.status, res.statusText);
+          return;
+        }
+        
+        const data = await res.json();
+        console.log("Recent images loaded:", data.length, "images");
+        setRecentImages(data);
+      } catch (error) {
+        console.warn("Failed to fetch recent images:", error);
+      }
+    }
+
+    fetchRecentImages();
+  }, [folder]);
 
   async function deleteOldImage(url: string) {
     if (url && url.startsWith("/uploads/")) {
@@ -75,6 +114,25 @@ export function ImageUpload({
       } else {
         setPreview(data.url);
         onUpload(data.url);
+        
+        // Refresh recent images
+        try {
+          const params = new URLSearchParams({
+            folder,
+            limit: "6",
+          });
+          const url = `/api/admin/upload/recent?${params.toString()}`;
+          const res = await fetch(url);
+          if (res.ok) {
+            const updatedImages = await res.json();
+            console.log("Recent images refreshed after upload:", updatedImages.length);
+            setRecentImages(updatedImages);
+          } else {
+            console.warn("Failed to refresh recent images:", res.status);
+          }
+        } catch (error) {
+          console.warn("Failed to refresh recent images:", error);
+        }
       }
     } catch {
       alert("Upload failed");
@@ -108,6 +166,40 @@ export function ImageUpload({
     <div>
       <label className="mb-1.5 block text-sm font-medium">{label}</label>
       <input type="hidden" name={name} value={preview || ""} />
+
+      {/* Recent Images */}
+      {recentImages.length > 0 && (
+        <div className="mb-4">
+          <p className="mb-2 text-xs font-medium text-neutral-500 dark:text-neutral-400">
+            Recent Uploads
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {recentImages.map((img) => (
+              <button
+                key={img.id}
+                type="button"
+                onClick={() => {
+                  setPreview(img.secureUrl);
+                  onUpload(img.secureUrl);
+                }}
+                className={`relative h-16 w-16 overflow-hidden rounded-lg border-2 transition-all ${
+                  preview === img.secureUrl
+                    ? "border-violet-500 shadow-lg shadow-violet-500/20"
+                    : "border-neutral-200 hover:border-violet-300 dark:border-neutral-700 dark:hover:border-violet-600"
+                }`}
+              >
+                <Image
+                  src={img.secureUrl}
+                  alt={`Recent upload ${img.id}`}
+                  fill
+                  className="object-cover"
+                  unoptimized
+                />
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div
         onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}

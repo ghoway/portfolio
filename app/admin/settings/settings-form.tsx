@@ -52,6 +52,20 @@ export function SiteSettingsForm({ settings }: { settings: SiteSettingsMap }) {
             <textarea name="meta_description" rows={2} defaultValue={settings.meta_description} className={`${inputCls} resize-none`} />
           </div>
           <div>
+            <label className="mb-1 block text-sm font-medium">Meta Keywords</label>
+            <textarea name="meta_keywords" rows={2} defaultValue={settings.meta_keywords} placeholder="AI, Web Development, Networking" className={`${inputCls} resize-none`} />
+            <p className="mt-1 text-xs text-neutral-400">Comma-separated keywords for SEO</p>
+          </div>
+          <div>
+            <label className="mb-1 block text-sm font-medium">Site Author</label>
+            <input name="site_author" defaultValue={settings.site_author} placeholder="Your Name" className={inputCls} />
+          </div>
+          <div>
+            <label className="mb-1 block text-sm font-medium">OG Image URL</label>
+            <input name="og_image_url" type="url" defaultValue={settings.og_image_url} placeholder="https://example.com/og-image.png" className={inputCls} />
+            <p className="mt-1 text-xs text-neutral-400">Image for social media sharing (1200x630px recommended)</p>
+          </div>
+          <div>
             <label className="mb-1 block text-sm font-medium">Footer Text</label>
             <input name="footer_text" defaultValue={settings.footer_text} className={inputCls} />
           </div>

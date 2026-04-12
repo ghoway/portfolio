@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createProject } from "@/actions/projects";
 import { Save, ChevronDown, ArrowLeft, X } from "lucide-react";
-import { ImageUpload } from "@/components/image-upload";
 import { useToast } from "@/components/toast";
 import { useSaveConfirm, SaveConfirm } from "@/components/save-confirm";
 import Link from "next/link";
@@ -12,7 +11,6 @@ import Link from "next/link";
 export default function NewProjectPage() {
   const router = useRouter();
   const { toast } = useToast();
-  const [imageUrl, setImageUrl] = useState("");
   const { isConfirming, confirmSave, cancelSave } = useSaveConfirm();
   const [pendingFormData, setPendingFormData] = useState<FormData | null>(null);
 
@@ -25,7 +23,6 @@ export default function NewProjectPage() {
   async function handleSubmit() {
     if (!pendingFormData) return;
     try {
-      pendingFormData.set("imageUrl", imageUrl);
       await createProject(pendingFormData);
       toast("Project created successfully!");
       router.push("/admin/projects");
@@ -46,13 +43,6 @@ export default function NewProjectPage() {
       </div>
 
       <form onSubmit={handleSubmitWrapper} className="space-y-4">
-        <ImageUpload
-          onUpload={setImageUrl}
-          folder="projects"
-          label="Project Cover Image"
-          aspectRatio="video"
-          name="imageUrl"
-        />
         <div className="grid gap-4 sm:grid-cols-2">
           <div><label className="mb-1 block text-sm font-medium">Title</label><input name="title" required className="w-full rounded-xl border border-neutral-200 px-4 py-3 text-sm dark:border-neutral-700 dark:bg-neutral-800" /></div>
           <div>
